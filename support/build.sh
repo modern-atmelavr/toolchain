@@ -27,10 +27,6 @@ RELEASE_IMAGE="${IMAGE_NAME}:${PLATFORM}"
 FAIL_FLAG='/.fail'
 BUILD_LOG='/build.log'
 
-release_exists() {
-  docker inspect "${RELEASE_IMAGE}" >/dev/null 2>&1
-}
-
 wip_run() {
   if ! docker inspect "${WIP_IMAGE}" >/dev/null 2>&1; then {
     exit 1
@@ -40,9 +36,7 @@ wip_run() {
 }
 
 get_resume_step() {
-  if ! release_exists; then {
-    wip_run cat "${FAIL_FLAG}" 2>/dev/null || :
-  }; fi
+  wip_run cat "${FAIL_FLAG}" 2>/dev/null || :
 }
 
 get_resume_arg() {
@@ -55,8 +49,6 @@ get_resume_arg() {
 }
 
 build() {
-  docker image rm --no-prune "${WIP_IMAGE}"
-
   # shellcheck disable=SC2046 # (get_resume_arg is unquoted on purpose)
   docker build \
     --file support/Dockerfile \

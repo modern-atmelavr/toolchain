@@ -151,6 +151,7 @@ RUN sed -e "s#@@DOWNLOADS_DIR@@#${DOWNLOADS_DIR}#g" \
 WORKDIR "${CLI_DIR}"
 COPY scripts/run-step.sh .
 
+ARG resume_source
 RUN ./run-step.sh source
 
 # Steps obtained with `./ct-ng list-steps`:
