@@ -23,10 +23,6 @@ PLATFORMS := linux_x86_64 windows_amd64
 menuconfig:
 	$(menuconfig_sh)
 
-linux_x86_64: $(toolchain_prefix)linux_x86_64$(toolchain_suffix)
-
-windows_amd64: $(toolchain_prefix)windows_amd64$(toolchain_suffix)
-
 all: $(PLATFORMS)
 
 clean:
@@ -43,6 +39,7 @@ distclean: clean
 release: $(PLATFORMS)
 	$(release_sh) $(FORCE)
 
-$(foreach platform, $(PLATFORMS), \
-	$(toolchain_prefix)$(platform)$(toolchain_suffix): $(config_in) ; \
-		PLATFORM=$(platform) $(build_sh))
+$(toolchain_prefix)%$(toolchain_suffix): $(config_in)
+	PLATFORM=$* $(build_sh)
+
+$(PLATFORMS): %: $(toolchain_prefix)%$(toolchain_suffix)
